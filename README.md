@@ -39,8 +39,8 @@ python scripts/train.py --data datasets/neu/data.yaml --epochs 50
 ## Results (preliminary — midterm)
 | Metric | Value |
 |---|---|
-| mAP@0.5 | _[fill from results_metrics.json]_ |
-| mAP@0.5:0.95 | _[fill]_ |
+| mAP@0.5 | 0.763 |
+| mAP@0.5:0.95 | 0.463 |
 
 ## Dataset
 NEU-DET: 1,800 grayscale images (200×200 px), 6 defect classes — crazing,

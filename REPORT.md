@@ -8,64 +8,59 @@
 ---
 
 ## 1. Summary
-Weeks 1–4 covered Python/data-science foundations, classical ML, deep-learning and
-multimodal theory, and object detection. The computer-vision module — a YOLOv8 detector
-on the NEU-DET dataset — is set up and trained; preliminary mAP is reported in §5. The
-multimodal fusion (VLM) stage and Streamlit deployment follow in Weeks 5–8.
+Weeks 1-4 covered Python/data-science foundations, classical ML, deep-learning and multimodal theory, and object detection. The computer-vision module - a YOLOv8 detector on the NEU-DET dataset - is trained and evaluated, reaching **mAP@0.5 = 0.763** (mAP@0.5:0.95 = 0.463) on a held-out validation set. The multimodal fusion (VLM) stage and Streamlit deployment follow in Weeks 5-8.
 
-## 2. Work completed (Weeks 1–4)
-- **Week 1 — Python & data science:** NumPy, Pandas, Matplotlib/Seaborn; a data
-  loading/cleaning/visualization notebook.
-- **Week 2 — ML fundamentals:** supervised (linear/logistic regression, decision trees,
-  SVM) and unsupervised (K-Means, PCA); train/test splits, cross-validation,
-  bias–variance; scikit-learn practicals.
-- **Week 3 — Deep learning & multimodal theory:** the neuron and backpropagation; CNNs
-  (convolution, pooling, feature hierarchy); ResNet and transfer learning; multimodal
-  fusion (early / late / feature-level); contrastive learning and joint embeddings
-  (CLIP, BLIP); VLM survey (Flamingo, GPT-4V, LLaVA).
-- **Week 4 — Object detection & YOLOv8:** detection theory (IoU, anchor-free prediction,
-  NMS, mAP); NEU-DET EDA; Pascal VOC → YOLO annotation conversion; first YOLOv8 run.
+## 2. Work completed (Weeks 1-4)
+- **Week 1 - Python & data science:** NumPy, Pandas, Matplotlib/Seaborn; a data loading/cleaning/visualization notebook.
+- **Week 2 - ML fundamentals:** supervised (linear/logistic regression, decision trees, SVM) and unsupervised (K-Means, PCA); train/test splits, cross-validation, bias-variance; scikit-learn practicals.
+- **Week 3 - Deep learning & multimodal theory:** the neuron and backpropagation; CNNs (convolution, pooling, feature hierarchy); ResNet and transfer learning; multimodal fusion (early / late / feature-level); contrastive learning and joint embeddings (CLIP, BLIP); VLM survey (Flamingo, GPT-4V, LLaVA).
+- **Week 4 - Object detection & YOLOv8:** detection theory (IoU, anchor-free prediction, NMS, mAP); NEU-DET EDA; Pascal VOC to YOLO annotation conversion; YOLOv8 training and evaluation.
 
 ## 3. Dataset & EDA
-NEU-DET: 1,800 grayscale images (200×200 px), 6 defect classes (crazing, inclusion,
-patches, pitted surface, rolled-in scale, scratches), ~300 images/class, Pascal VOC
-bounding-box annotations. Findings (see `notebooks/eda.ipynb`):
-- Class balance: _[FILL — e.g. balanced, ~300/class]_
-- Boxes per image: _[FILL]_
-- Box size / aspect distribution: _[FILL]_
-- Image dimensions: all confirmed 200×200.
+NEU-DET: 1,800 grayscale images (200x200 px), 6 defect classes (crazing, inclusion, patches, pitted surface, rolled-in scale, scratches), ~300 images/class, Pascal VOC bounding-box annotations. Findings (see notebooks/eda.ipynb):
+- **Class balance:** balanced at the image level (~300 images per class), but bounding-box counts differ - inclusion (1,011) and patches (881) have the most boxes, pitted surface the fewest (432) - because some defect types appear as many small instances per image.
+- **Boxes per image:** ~2.3 on average (4,189 boxes across 1,800 images).
+- **Box size / aspect:** sizes vary widely - texture-like defects (crazing, rolled-in scale) often span much of the 200x200 frame, while inclusions and pitted spots are small and localized; scratches are elongated whereas patches and pitted surfaces are more compact.
+- **Image dimensions:** all confirmed 200x200.
 
 ## 4. Computer-vision module
-- Annotations converted Pascal VOC XML → YOLO txt (`scripts/voc_to_yolo.py`), with a
-  stratified 85/15 train/val split.
-- Model: **YOLOv8n**, transfer-learned from pretrained weights (justified by the small
-  dataset size — training from scratch on 1,800 images would underperform).
-- Training config: epochs _[FILL]_, imgsz 320, batch 16, on Google Colab GPU.
+- Annotations converted Pascal VOC XML to YOLO txt (scripts/voc_to_yolo.py), with a stratified 85/15 train/val split -> 1,529 train / 271 val images.
+- Model: **YOLOv8n**, transfer-learned from pretrained weights (justified by the small dataset - training from scratch on 1,529 images would underperform).
+- Training config: **50 epochs**, image size 320, batch 16, on a Google Colab T4 GPU. Optimizer auto-selected as AdamW (lr ~ 0.001).
 
-## 5. Preliminary results
+## 5. Results (preliminary)
+Evaluated on the 271-image held-out validation set (613 defect instances):
+
 | Metric | Value |
 |---|---|
-| mAP@0.5 | _[FILL]_ |
-| mAP@0.5:0.95 | _[FILL]_ |
-| Precision | _[FILL]_ |
-| Recall | _[FILL]_ |
+| mAP@0.5 | 0.763 |
+| mAP@0.5:0.95 | 0.463 |
+| Precision | 0.769 |
+| Recall | 0.656 |
 
-Per-class mAP@0.5: _[FILL]_
-(Generated by `scripts/train.py`; saved to `results_metrics.json`.)
+**Per-class mAP@0.5:**
 
-## 6. Challenges
-- The main setup bottleneck was the annotation format: NEU-DET ships Pascal VOC XML,
-  whereas YOLOv8 needs normalized YOLO txt. Resolved with a robust recursive converter
-  that also builds the split and writes `data.yaml`.
+| Class | mAP@0.5 |
+|---|---|
+| scratches | 0.934 |
+| patches | 0.899 |
+| pitted_surface | 0.894 |
+| inclusion | 0.855 |
+| rolled-in_scale | 0.631 |
+| crazing | 0.365 |
 
-## 7. Next steps (Weeks 5–8)
-- **Week 5:** hyperparameter-tuning study (LR schedules, weight decay, augmentation
-  flags, IoU threshold); apply on Colab if compute permits.
-- **Week 6:** contrastive learning (InfoNCE, CLIP/BLIP) and how it could improve defect
-  feature representations over supervised YOLO alone.
-- **Week 7:** end-to-end pipeline (image → YOLO → VLM → report) + Streamlit app.
+(Generated by scripts/train.py; full output in results_metrics.json.)
+
+## 6. Challenges & observations
+- The main setup bottleneck was the annotation format: NEU-DET ships Pascal VOC XML, whereas YOLOv8 needs normalized YOLO txt. Resolved with a robust recursive converter that also builds the split and writes data.yaml.
+- **Crazing is the weakest class** (mAP@0.5 = 0.365) while all others fall between 0.63-0.93. This is consistent with crazing's faint, low-contrast, hairline appearance, which is genuinely hard to localize. It is the primary target for the Week-5 tuning work.
+
+## 7. Next steps (Weeks 5-8)
+- **Week 5:** hyperparameter-tuning study (LR schedules, weight decay, augmentation flags, IoU threshold); focus on lifting crazing performance; apply on Colab if compute permits.
+- **Week 6:** contrastive learning (InfoNCE, CLIP/BLIP) and how it could improve defect feature representations over supervised YOLO alone.
+- **Week 7:** end-to-end pipeline (image -> YOLO -> VLM -> report) + Streamlit app.
 - **Week 8:** end-to-end testing, documentation, final report.
 
 ## Links
-- Repository: https://github.com/kartikya2207/<repo-name>
-- Code: `scripts/`, `notebooks/`
+- Repository: https://github.com/kartikya2207/neu-defect-detection
+- Code: scripts/, notebooks/

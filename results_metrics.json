@@ -1,0 +1,14 @@
+{
+  "mAP50": 0.763,
+  "mAP50_95": 0.4627,
+  "precision": 0.7691,
+  "recall": 0.6561,
+  "per_class_mAP50": {
+    "crazing": 0.3647,
+    "inclusion": 0.855,
+    "patches": 0.8992,
+    "pitted_surface": 0.8944,
+    "rolled-in_scale": 0.631,
+    "scratches": 0.9339
+  }
+}
