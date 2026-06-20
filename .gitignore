@@ -1,0 +1,8 @@
+# data & training artifacts (too large / regenerable — keep out of git)
+datasets/
+runs/
+*.pt
+wandb/
+.ipynb_checkpoints/
+__pycache__/
+*.cache

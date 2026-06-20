@@ -1,0 +1,7 @@
+ultralytics>=8.2.0
+kagglehub>=0.3.0
+pandas
+numpy
+matplotlib
+seaborn
+pillow
