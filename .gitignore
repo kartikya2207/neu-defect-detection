@@ -6,3 +6,10 @@ wandb/
 .ipynb_checkpoints/
 __pycache__/
 *.cache
+
+# ---- Secrets / local env ----
+.env*
+!.env.example
+*.pem
+*.key
+kaggle.json
