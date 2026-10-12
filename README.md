@@ -104,7 +104,6 @@ Dockerfile             containerized Streamlit demo
 
 ```bash
 pip install -r requirements.txt
-pip install streamlit openai          # app + optional VLM report (not in requirements.txt yet)
 
 python scripts/download_data.py                                   # needs Kaggle credentials
 python scripts/voc_to_yolo.py --src <path-printed-above> --dst datasets/neu
