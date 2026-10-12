@@ -28,6 +28,12 @@ box: inclusion (1,011) and patches (881) have the most boxes, pitted surface the
 Texture-like defects (crazing, rolled-in scale) often span much of the frame; inclusions and pits
 are small; scratches are elongated.
 
+![One sample per class with ground-truth boxes](docs/images/sample_per_class.png)
+*One NEU-DET image per defect class with its ground-truth (annotated) boxes, from `notebooks/eda.ipynb`.*
+
+![Boxes and images per class](docs/images/class_counts.png)
+*Boxes per class vs images per class: balanced by image, not by box (EDA notebook output).*
+
 **Conversion.** `scripts/voc_to_yolo.py` recursively converts VOC XML to normalized YOLO txt,
 makes a stratified 85/15 split (1,529 train / 271 val images) and writes `data.yaml`.
 
